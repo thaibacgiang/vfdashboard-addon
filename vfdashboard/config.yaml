@@ -1,14 +1,32 @@
-name: "VF Dashboard"
+# vfdashboard/config.yaml
+name: "VF9 Dashboard"
 version: "1.0.0"
-slug: "vf_dashboard"
-description: "VinFast Vehicle Dashboard"
+slug: "vf9_dashboard"
+description: "VinFast Vehicle Telemetry Dashboard"
+url: "https://github.com/VF9-Club/VFDashboard"
 arch:
-  - aarch64  # Cho Raspberry Pi
-  - amd64    # Cho máy ảo hoặc PC
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
 init: false
 ports:
-  4321/tcp: 4321 # Ánh xạ cổng ứng dụng
+  4321/tcp: 4321
+ports_description:
+  4321/tcp: "VF Dashboard Web Interface"
 map:
   - config:rw
-options: {}
-schema: {}
+options:
+  vin: ""
+  username: ""
+  password: ""
+  refresh_interval: 60
+schema:
+  vin:
+    name: "Vehicle VIN"
+    description: "Your VinFast vehicle VIN number"
+    required: true
+    type: string
+  username: # ... (giữ nguyên phần schema bạn đã có)
+# QUAN TRỌNG: Sửa dòng 'image' thành định dạng sau
+image: "ghcr.io/{YOUR_GITHUB_USERNAME}/vf9-dashboard-{arch}"
