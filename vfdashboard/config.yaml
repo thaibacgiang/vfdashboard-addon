@@ -1,14 +1,13 @@
-name: VFDashboard
-slug: vfdashboard
+name: "VF Dashboard"
 version: "1.0.0"
-description: VinFast Dashboard for Home Assistant
+slug: "vf_dashboard"
+description: "VinFast Vehicle Dashboard"
 arch:
-  - amd64
-  - aarch64
-startup: services
-boot: auto
+  - aarch64  # Cho Raspberry Pi
+  - amd64    # Cho máy ảo hoặc PC
+init: false
 ports:
-  8080/tcp: 8080
+  4321/tcp: 4321 # Ánh xạ cổng ứng dụng
 map:
   - config:rw
 options: {}
