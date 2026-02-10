@@ -1,0 +1,102 @@
+name: Debug Build Process
+
+on:
+  workflow_dispatch:  # Chỉ chạy thủ công
+
+jobs:
+  debug-clone:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+      
+      - name: Show Current Structure
+        run: |
+          echo "📁 CURRENT REPOSITORY STRUCTURE:"
+          echo "================================="
+          find . -type f -name "*.yml" -o -name "*.yaml" -o -name "Dockerfile" -o -name "*.sh" | sort
+          echo ""
+          echo "📁 vfdashboard/ folder contents:"
+          ls -la vfdashboard/
+      
+      - name: Test Clone VF9-Club Repo
+        run: |
+          echo "🧪 TESTING: Clone VF9-Club/VFDashboard"
+          echo "--------------------------------------"
+          timeout 30s git clone https://github.com/VF9-Club/VFDashboard.git /tmp/test-vf9 --depth=1
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ SUCCESS: VF9-Club repo cloned"
+            echo "File count: $(find /tmp/test-vf9 -type f | wc -l)"
+            echo "Has package.json: $(test -f /tmp/test-vf9/package.json && echo YES || echo NO)"
+          else
+            echo "❌ FAILED: Cannot clone VF9-Club repo"
+          fi
+      
+      - name: Test Clone VinFast-Community Repo
+        run: |
+          echo "🧪 TESTING: Clone VinFast-Community repo"
+          echo "----------------------------------------"
+          timeout 30s git clone https://github.com/VinFast-Community/vinfast-dashboard-selfhosted.git /tmp/test-selfhosted --depth=1
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ SUCCESS: Self-hosted repo cloned"
+            echo "File count: $(find /tmp/test-selfhosted -type f | wc -l)"
+            ls -la /tmp/test-selfhosted/
+          else
+            echo "❌ FAILED: Cannot clone self-hosted repo"
+            echo "Trying alternative URL..."
+            timeout 30s git clone https://github.com/VinFast-Community/vinfast-dashboard.git /tmp/test-alt --depth=1 2>/dev/null && echo "Alternative OK" || echo "Alternative also failed"
+          fi
+      
+      - name: Check Dockerfile Content
+        run: |
+          echo "🔍 DOCKERFILE ANALYSIS:"
+          echo "======================"
+          if [ -f "vfdashboard/Dockerfile" ]; then
+            cat vfdashboard/Dockerfile
+            echo ""
+            echo "⚠️ CHECKING FOR ERRORS:"
+            grep -n "git clone" vfdashboard/Dockerfile || echo "No git clone found"
+            grep -n "Vinfast" vfdashboard/Dockerfile && echo "WARNING: 'Vinfast' should be 'VinFast' (case sensitive!)" || true
+          else
+            echo "❌ ERROR: Dockerfile not found at vfdashboard/Dockerfile"
+          fi
+
+  test-docker-build:
+    needs: debug-clone
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build Test (Simple)
+        run: |
+          echo "🏗️ BUILDING SIMPLE TEST CONTAINER..."
+          cd vfdashboard
+          
+          # Tạo Dockerfile đơn giản tạm thời để test
+          cat > Dockerfile.test << 'EOF'
+FROM alpine:latest
+RUN echo "✅ Build successful" && ls -la /etc/alpine-release
+EOF
+          
+          docker build -f Dockerfile.test -t test-image .
+          echo "✅ Simple Docker build works!"
+      
+      - name: Try Actual Dockerfile
+        run: |
+          echo "🔄 TRYING ACTUAL DOCKERFILE..."
+          cd vfdashboard
+          
+          if [ -f "Dockerfile" ]; then
+            echo "First 10 lines of Dockerfile:"
+            head -10 Dockerfile
+            
+            # Thử build với no-cache
+            docker build --no-cache --progress=plain . 2>&1 | tail -20
+          else
+            echo "❌ Dockerfile not found"
+          fi
