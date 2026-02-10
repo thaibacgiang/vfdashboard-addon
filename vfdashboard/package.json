@@ -1,0 +1,12 @@
+{
+  "name": "vfdashboard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "astro build",
+    "start": "npx serve dist -l 8080"
+  },
+  "dependencies": {
+    "astro": "^4.0.0"
+  }
+}
