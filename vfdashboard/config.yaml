@@ -1,0 +1,22 @@
+name: VFDashboard
+slug: vfdashboard
+version: "1.0.0"
+description: VinFast Vehicle Dashboard (VF9 Club)
+startup: application
+boot: auto
+
+arch:
+  - amd64
+
+ports:
+  4321/tcp: 4321
+
+ports_description:
+  4321/tcp: VFDashboard Web UI
+
+ingress: false
+host_network: false
+panel_icon: mdi:car-electric
+
+options: {}
+schema: {}
