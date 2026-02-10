@@ -1,9 +1,8 @@
-# vfdashboard/config.yaml
-name: "VF9 Dashboard"
-version: "1.0.0"
-slug: "vf9_dashboard"
-description: "VinFast Vehicle Telemetry Dashboard"
-url: "https://github.com/VF9-Club/VFDashboard"
+name: "VinFast Dashboard"
+version: "2.0.0"
+slug: "vinfast_dashboard"
+description: "Self-hosted VinFast Vehicle Telemetry Dashboard"
+url: "https://github.com/VinFast-Community/vinfast-dashboard-selfhosted"
 arch:
   - aarch64
   - amd64
@@ -11,22 +10,51 @@ arch:
   - armv7
 init: false
 ports:
-  4321/tcp: 4321
+  3000/tcp: 3000
 ports_description:
-  4321/tcp: "VF Dashboard Web Interface"
+  3000/tcp: "Dashboard Web Interface"
 map:
   - config:rw
 options:
   vin: ""
-  username: ""
+  email: ""
   password: ""
-  refresh_interval: 60
+  units: "metric"
+  language: "en"
 schema:
   vin:
     name: "Vehicle VIN"
     description: "Your VinFast vehicle VIN number"
     required: true
     type: string
-  username: # ... (giữ nguyên phần schema bạn đã có)
-# QUAN TRỌNG: Sửa dòng 'image' thành định dạng sau
-image: "ghcr.io/thaibacgiang/vf9-dashboard-{arch}"
+  email:
+    name: "VinFast Account Email"
+    description: "Your VinFast account email"
+    required: true
+    type: string
+  password:
+    name: "VinFast Account Password"
+    description: "Your VinFast account password"
+    required: true
+    type: string
+    secure: true
+  units:
+    name: "Units System"
+    description: "Measurement units system"
+    required: false
+    type: select
+    options:
+      - "metric"
+      - "imperial"
+    default: "metric"
+  language:
+    name: "Language"
+    description: "Interface language"
+    required: false
+    type: select
+    options:
+      - "en"
+      - "vi"
+      - "fr"
+    default: "en"
+image: "ghcr.io/thaibacgiang/vinfast-dashboard-{arch}"
