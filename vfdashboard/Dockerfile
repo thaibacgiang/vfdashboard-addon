@@ -1,26 +1,18 @@
-FROM node:22-alpine
+FROM node:22-alpine AS build
 
 WORKDIR /app
 RUN apk add --no-cache git
 
-# Clone source
 RUN git clone https://github.com/VF9-Club/VFDashboard.git .
 
-# Ghi đè astro.config.mjs để loại bỏ Cloudflare adapter
-RUN cat > astro.config.mjs << 'EOF'
-import { defineConfig } from "astro/config";
-
-export default defineConfig({
-  server: {
-    host: true,
-    port: 4321
-  }
-});
-EOF
-
-# Cài dependency
+# Build static (Cloudflare adapter vẫn OK ở bước này)
 RUN npm install
+RUN npm run build
 
-EXPOSE 4321
 
-CMD ["npm", "run", "dev", "--", "--host"]
+# ===== runtime =====
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
