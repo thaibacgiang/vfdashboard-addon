@@ -1,18 +1,11 @@
-FROM node:22-alpine AS build
+FROM node:20-alpine
 
 WORKDIR /app
-RUN apk add --no-cache git
 
-RUN git clone https://github.com/VF9-Club/VFDashboard.git .
+COPY . .
 
-# Build static (Cloudflare adapter vẫn OK ở bước này)
 RUN npm install
-RUN npm run build
 
+EXPOSE 8080
 
-# ===== runtime =====
-FROM nginx:alpine
-
-COPY --from=build /app/dist /usr/share/nginx/html
-
-EXPOSE 80
+CMD ["bash", "run.sh"]
