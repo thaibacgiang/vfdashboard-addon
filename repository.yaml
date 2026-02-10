@@ -1,3 +1,4 @@
-name: VFDashboard Add-on
-url: https://github.com/thaibacgiang/vfdashboard-addon
-maintainer: Do Thai
+# repository.yaml
+name: "VF9 Club Add-ons"
+url: "https://github.com/thaibacgiang/vfdashboard-addon"
+maintainer: "Do Thai"
