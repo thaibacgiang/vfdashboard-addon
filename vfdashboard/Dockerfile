@@ -24,7 +24,7 @@ RUN chown -R node:node /app
 USER node
 
 # 6. Expose port
-EXPOSE 3000
+EXPOSE 3001
 
 # 7. Chạy server đã build
 CMD ["node", "./dist/server/entry.mjs"]
