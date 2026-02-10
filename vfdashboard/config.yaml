@@ -29,4 +29,4 @@ schema:
     type: string
   username: # ... (giữ nguyên phần schema bạn đã có)
 # QUAN TRỌNG: Sửa dòng 'image' thành định dạng sau
-image: "ghcr.io/{YOUR_GITHUB_USERNAME}/vf9-dashboard-{arch}"
+image: "ghcr.io/thaibacgiang/vf9-dashboard-{arch}"
