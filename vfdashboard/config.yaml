@@ -1,60 +1,30 @@
 name: "VinFast Dashboard"
-version: "2.0.0"
+version: "3.0.0"
 slug: "vinfast_dashboard"
-description: "Self-hosted VinFast Vehicle Telemetry Dashboard"
-url: "https://github.com/VinFast-Community/vinfast-dashboard-selfhosted"
+description: "Self-hosted VinFast Vehicle Telemetry Dashboard (VF9 Club version)"
+url: "https://github.com/VF9-Club/VFDashboard"
+
 arch:
   - aarch64
   - amd64
   - armhf
   - armv7
+
 init: false
-ports:
-  3001/tcp: 3001
-ports_description:
-  3001/tcp: "Dashboard Web Interface"
+
+# ===== INGRESS =====
+ingress: true
+ingress_port: 3001
+panel_icon: mdi:car-electric
+panel_title: VinFast
+
+# ===== OPTIONS =====
+options: {}
+schema: {}
+
+# ===== STORAGE =====
 map:
   - config:rw
-options:
-  vin: ""
-  email: ""
-  password: ""
-  units: "metric"
-  language: "en"
-schema:
-  vin:
-    name: "Vehicle VIN"
-    description: "Your VinFast vehicle VIN number"
-    required: true
-    type: string
-  email:
-    name: "VinFast Account Email"
-    description: "Your VinFast account email"
-    required: true
-    type: string
-  password:
-    name: "VinFast Account Password"
-    description: "Your VinFast account password"
-    required: true
-    type: string
-    secure: true
-  units:
-    name: "Units System"
-    description: "Measurement units system"
-    required: false
-    type: select
-    options:
-      - "metric"
-      - "imperial"
-    default: "metric"
-  language:
-    name: "Language"
-    description: "Interface language"
-    required: false
-    type: select
-    options:
-      - "en"
-      - "vi"
-      - "fr"
-    default: "en"
+
+# ===== DOCKER IMAGE =====
 image: "ghcr.io/thaibacgiang/vinfast-dashboard-{arch}"
